@@ -1,6 +1,6 @@
 //
 //  ContentView.swift
-//  TimerApp
+//  CustomTimerApp
 //
 //  Created by HubertMac on 26/06/2023.
 //
