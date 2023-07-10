@@ -9,6 +9,9 @@ import SwiftUI
 
 struct ContentView: View {
     
+    @State private var isCounting = false
+    @Namespace var namespace
+    
     @StateObject var model = ViewModewl()
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
@@ -16,20 +19,31 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            Text("\(model.time)")
-                .font(.system(size: 70, weight: .medium, design: .rounded))
-                .padding()
-                .frame(width: width)
-                .background(.thinMaterial)
-                .cornerRadius(20)
-                .overlay(RoundedRectangle(cornerRadius: 20)
-                    .stroke(Color.gray, lineWidth: 4))
-                .alert("Timer done!", isPresented: $model.showingAlert){
-                    Button("Conitinue", role: .cancel) {
-                        //
+            ZStack {
+                
+                if !isCounting {
+                    Text("\(model.time)")
+                        .font(.system(size: 70, weight: .medium, design: .rounded))
+                        .padding()
+                        .frame(width: width)
+                        .background(.thinMaterial)
+                        .cornerRadius(20)
+                        .overlay(RoundedRectangle(cornerRadius: 20)
+                            .stroke(Color.gray, lineWidth: 4)
+                            .matchedGeometryEffect(id: "circle", in: namespace))
+                        .alert("Timer done!", isPresented: $model.showingAlert){
+                            Button("Conitinue", role: .cancel) {
+                                //
+                            }
+                            
                     }
-                    
+                } else {
+                    Circle()
+                        .matchedGeometryEffect(id: "circle", in: namespace)
                 }
+            }
+            
+            
             Slider(value: $model.minutes, in: 1...25, step: 1)
                 .padding()
                 .frame(width:width)
@@ -39,17 +53,20 @@ struct ContentView: View {
             HStack (spacing: 50) {
                 Button("Start") {
                     model.start(minutes: model.minutes)
+                    isCounting = true
                 }
                 .disabled(model.isActive)
                 
                 Button("Reset") {
                     model.reset()
+                    isCounting = false
                 }
                 .tint(.red)
                 
             }
             .frame(width: width)
         }
+        .animation(.spring(), value: isCounting)
         .onReceive(timer) { _ in
             model.updateCountdown()
         }
