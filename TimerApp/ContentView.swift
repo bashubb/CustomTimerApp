@@ -24,22 +24,42 @@ struct ContentView: View {
                 if !isCounting {
                     Text("\(model.time)")
                         .font(.system(size: 70, weight: .medium, design: .rounded))
+                        
                         .padding()
                         .frame(width: width)
-                        .background(.thinMaterial)
+                        .background(.thinMaterial).matchedGeometryEffect(id: "background", in: namespace)
                         .cornerRadius(20)
                         .overlay(RoundedRectangle(cornerRadius: 20)
                             .stroke(Color.gray, lineWidth: 4)
                             .matchedGeometryEffect(id: "circle", in: namespace))
-                        .alert("Timer done!", isPresented: $model.showingAlert){
-                            Button("Conitinue", role: .cancel) {
-                                //
+                        
+                            
+                    
+                } else {
+                    ZStack {
+                        
+                        Circle()
+                            .stroke(.gray.opacity(0.1), lineWidth: 20)
+                            .matchedGeometryEffect(id: "background", in: namespace)
+                        
+                        Circle()
+                            .trim(from: 0, to: 0.34)
+                            .stroke(.red, style: StrokeStyle(lineWidth: 20, lineCap: .round, lineJoin: .round))
+                            .rotationEffect(.degrees(-90))
+                            .matchedGeometryEffect(id: "circle", in: namespace)
+                        
+                        Text("\(model.time)")
+                            .font(.system(size: 70, weight: .medium, design: .rounded))
+                            .alert("Timer done!", isPresented: $model.showingAlert){
+                                Button("Conitinue", role: .cancel) {
+                                    //
+                                }
                             }
                             
-                    }
-                } else {
-                    Circle()
-                        .matchedGeometryEffect(id: "circle", in: namespace)
+                            
+                        
+                        
+                    }.padding(30)
                 }
             }
             
